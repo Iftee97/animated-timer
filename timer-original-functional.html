@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Animated Timer</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" />
+  <style>
+    .dial {
+      height: 400px;
+      width: 400px;
+    }
+
+    .timer {
+      position: relative;
+      display: inline-block;
+    }
+
+    * {
+      font: inherit;
+    }
+
+    body {
+      font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans',
+        'Droid Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+
+    .timer input {
+      display: block;
+      border: none;
+      width: 240px;
+      font-size: 90px;
+      text-align: center;
+    }
+
+    .timer button {
+      border: none;
+      font-size: 36px;
+      cursor: pointer;
+    }
+
+    .timer button:focus {
+      outline: none;
+    }
+
+    .timer input:focus {
+      outline: none;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .controls {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="timer">
+    <div class="controls">
+      <input id="duration" value="30" />
+      <div>
+        <button id="start">
+          <i class="fas fa-play"></i>
+        </button>
+        <button id="pause">
+          <i class="fas fa-pause"></i>
+        </button>
+      </div>
+    </div>
+    <svg class="dial">
+      <circle fill="transparent" stroke="green" stroke-width="15" r="190" cx="0" cy="200"
+        transform="rotate(-90 100 100)" />
+    </svg>
+  </div>
+
+  <script>
+    function startTimer(durationInput, startButton, pauseButton, circle) {
+      const perimeter = circle.getAttribute('r') * 2 * Math.PI
+      circle.setAttribute('stroke-dasharray', perimeter)
+
+      let duration
+      let intervalId
+
+      function start() {
+        onStart(durationInput.value)
+        tick()
+        intervalId = setInterval(tick, 20)
+      }
+
+      function pause() {
+        clearInterval(intervalId)
+      }
+
+      function tick() {
+        if (timeRemaining() <= 0) {
+          pause()
+          onComplete()
+        } else {
+          setTimeRemaining(timeRemaining() - 0.02)
+          onTick(timeRemaining())
+        }
+      }
+
+      function timeRemaining() {
+        return parseFloat(durationInput.value)
+      }
+
+      function setTimeRemaining(time) {
+        durationInput.value = time.toFixed(2)
+      }
+
+      function onStart(totalDuration) {
+        duration = totalDuration
+      }
+
+      function onTick(timeRemaining) {
+        circle.setAttribute(
+          'stroke-dashoffset',
+          (perimeter * timeRemaining) / duration - perimeter
+        )
+      }
+
+      function onComplete() {
+        console.log('Timer is completed')
+      }
+
+      startButton.addEventListener('click', start)
+      pauseButton.addEventListener('click', pause)
+    }
+
+    const durationInput = document.querySelector('#duration')
+    const startButton = document.querySelector('#start')
+    const pauseButton = document.querySelector('#pause')
+    const circle = document.querySelector('circle')
+
+    startTimer(durationInput, startButton, pauseButton, circle)
+  </script>
+</body>
+
+</html>
