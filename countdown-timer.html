@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Countdown Timer</title>
+
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0;
+      padding: 0;
+      font-size: 2rem;
+      font-weight: 400;
+    }
+
+    #countdown {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 2rem 0;
+    }
+
+    .countdown-item {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin: 0 1rem;
+    }
+
+    .countdown-item__label {
+      font-size: 1.5rem;
+      font-weight: 400;
+      margin: 0;
+      padding: 0;
+    }
+
+    .countdown-item__value {
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 0;
+      padding: 0;
+    }
+
+  </style>
+</head>
+
+<body>
+  <h1>Countdown</h1>
+  <div id="countdown">
+    <div class="countdown-item">
+      <div class="countdown-item__label">Days</div>
+      <div class="countdown-item__value" id="days"></div>
+    </div>
+    <div class="countdown-item">
+      <div class="countdown-item__label">Hours</div>
+      <div class="countdown-item__value" id="hours"></div>
+    </div>
+    <div class="countdown-item">
+      <div class="countdown-item__label">Minutes</div>
+      <div class="countdown-item__value" id="minutes"></div>
+    </div>
+    <div class="countdown-item">
+      <div class="countdown-item__label">Seconds</div>
+      <div class="countdown-item__value" id="seconds"></div>
+    </div>
+  </div>
+
+  <!-- ------------------------------------------------------------------------------ -->
+  <!-- ------------------------------------------------------------------------------ -->
+  
+  <script>
+    let totalTime = null;
+    let remainingTime = null;
+
+    // these are static dates
+    const dateSince = new Date("2023-03-01T00:00:00.000Z");
+    const dateUntil = new Date("2023-03-31T00:00:00.000Z");
+
+    function getDuration(dateSince, dateUntil) {
+      // Get the time difference in milliseconds
+      const timeDiff = Math.abs(dateUntil.getTime() - dateSince.getTime());
+
+      // Convert the time difference to days, hours, minutes, and seconds
+      const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+      return {
+        days,
+        hours,
+        minutes,
+        seconds,
+      };
+    }
+
+    function updateDuration() {
+      const dateNow = new Date();
+      const duration = getDuration(dateNow, dateUntil);
+      remainingTime = duration;
+      updateHTML();
+      setTimeout(updateDuration, 200);
+    }
+
+    function updateHTML() {
+      document.getElementById("days").textContent = remainingTime.days;
+      document.getElementById("hours").textContent = remainingTime.hours;
+      document.getElementById("minutes").textContent = remainingTime.minutes;
+      document.getElementById("seconds").textContent = remainingTime.seconds;
+    }
+
+    function init() {
+      const dateNow = new Date();
+
+      const totalDuration = getDuration(dateSince, dateUntil);
+      totalTime = totalDuration;
+
+      const remainingDuration = getDuration(dateNow, dateUntil);
+      remainingTime = remainingDuration;
+
+      updateDuration();
+    }
+    init();
+  </script>
+</body>
+
+</html>
